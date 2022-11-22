@@ -4,15 +4,13 @@ import renderCell from "../../decorators/renderCell.decorator";
 import titleRenderCell from "./renderCells";
 import key from "../../decorators/key.decorators";
 
-export interface IPost {
-  id: number;
-  key: number;
-  title: string;
-  status: "published" | "draft" | "rejected";
-  createdAt: string;
-}
+export class Post {
 
-class Post {
+  @dataIndex("id")
+  @title("id")
+  @key("id")
+  id: number | undefined;
+
   @dataIndex("title")
   @title("Title")
   @key("title")
@@ -27,7 +25,5 @@ class Post {
   @dataIndex("createdAt")
   @title("createdAt")
   @key("createdAt")
-  createdAt: string | undefined;
+  createdAt: Date | undefined;
 }
-
-export default Post;

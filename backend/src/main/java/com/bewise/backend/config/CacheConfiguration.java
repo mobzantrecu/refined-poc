@@ -41,6 +41,7 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
+            createCache(cm, com.bewise.backend.domain.Post.class.getName());
             // jhipster-needle-caffeine-add-entry
         };
     }
