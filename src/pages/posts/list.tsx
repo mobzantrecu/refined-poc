@@ -8,56 +8,63 @@ import {
   Select,
   useSelect,
 } from "@pankod/refine-antd";
+import { ColumnType } from "antd/es/table/interface";
+import { antdEntityGetColumns, antdEntityTableColumns, antdEntityTableColumnsFromObj } from "decorators/AntdEntity";
+import { generatePropertyDecorators } from "decorators/AntdTableColumn";
+import { ColumnsType } from "rc-table/lib/interface";
 import { Post } from "../../model/Product/product-model";
-import getColumns from "../../utils";
+//import getColumns from "../../utils";
+import ts from 'typescript'
 
 export const PostList: React.FC = () => {
   const { tableProps } = useTable<Post>();
 
-  const columns = getColumns<Post>(Post);
+  /* Pruebas out of context */
+
+  const vals = ['option1'];
+  const dec = generatePropertyDecorators(vals);
+
+  const resultFile = ts.createSourceFile("someFileName.ts", "", ts.ScriptTarget.Latest, false, ts.ScriptKind.TS);
+  const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+
+  const result = printer.printNode(ts.EmitHint.Unspecified, dec[0], resultFile);
+  console.log({result})
+
+  /* End pruebas out of context */
+
+  const cols = antdEntityGetColumns<Post>(Post);
+  
+  cols.actions = {
+      title: "Actions",
+      dataIndex: "actions",
+      width: 125,
+      render: (text, record, index) => {
+        return <ShowButton hideText recordItemId={record.id} />;
+      }
+  }
+
   const { selectProps: postSelectProps } = useSelect<String>({
         resource: "posts",
         optionValue: "title"
     });
-  //columns.find((column) => columns.key === Post.prototype.status.toString()) <-buscar forma de obtener nombre del atributo directamente
   
+  cols["title"].filterDropdown = (props: any) => (
+    <FilterDropdown {...props}>
+        <Select
+            style={{ minWidth: 200 }}
+            mode="multiple"
+            placeholder="Select posts"
+            {...postSelectProps}
+        />
+    </FilterDropdown>
+  );
 
-  const colTitle = columns.find((column: any) => column.key === "title")
-  const colIndexTitle = columns.findIndex((column: any) => column.key === "title")
-  colTitle.filterDropdown = (props: any) => (
-          <FilterDropdown {...props}>
-              <Select
-                  style={{ minWidth: 200 }}
-                  mode="multiple"
-                  placeholder="Select posts"
-                  {...postSelectProps}
-              />
-          </FilterDropdown>
-        );
-
-  columns[colIndexTitle] = colTitle
-
-
-  //obtengo la columna y su indice
-  const col = columns.find((column: any) => column.key === "status")
-  const colIndex = columns.findIndex((column: any) => column.key === "status")
-  
   //le sobreescribo el atributo render a la columna para decir que en esta pantalla se renderice como un TagField
-  col.render = (value: any) => <TagField value={value} />;
-  columns[colIndex] = col
-
-  columns.push({
-      title: "Actions",
-      dataIndex: "actions",
-      minWidth: 250,
-      renderCell: function render(params: any) {
-          return <ShowButton hideText recordItemId={params.row.id} />;
-      },
-  })
+  cols.status.render = (value: any) => <TagField value={value} />;
 
   return (
     <List>
-      <Table {...tableProps} rowKey="id" columns={columns as any} />
+      <Table {...tableProps} rowKey="id" columns={antdEntityTableColumnsFromObj<Post>(cols)} />
     </List>
   );
 };
