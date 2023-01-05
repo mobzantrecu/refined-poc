@@ -8,19 +8,24 @@ import {
   Select,
   useSelect,
 } from "@pankod/refine-antd";
-import { ColumnType } from "antd/es/table/interface";
-import { antdEntityGetColumns, antdEntityTableColumns, antdEntityTableColumnsFromObj } from "decorators/AntdEntity";
-import { generatePropertyDecorators } from "decorators/AntdTableColumn";
-import { ColumnsType } from "rc-table/lib/interface";
+//import { ColumnType } from "antd/es/table/interface";
+import {
+  antdEntityGetColumns,
+//  antdEntityTableColumns,
+  antdEntityTableColumnsFromObj,
+} from "decorators/AntdEntity";
+//import { generatePropertyDecorators } from "decorators/AntdTableColumn";
+//import { ColumnsType } from "rc-table/lib/interface";
 import { Post } from "../../model/Product/product-model";
 //import getColumns from "../../utils";
-import ts from 'typescript'
+//import ts from "typescript";
 
 export const PostList: React.FC = () => {
   const { tableProps } = useTable<Post>();
 
   /* Pruebas out of context */
 
+  /*
   const vals = ['option1'];
   const dec = generatePropertyDecorators(vals);
 
@@ -29,33 +34,35 @@ export const PostList: React.FC = () => {
 
   const result = printer.printNode(ts.EmitHint.Unspecified, dec[0], resultFile);
   console.log({result})
-
+*/
   /* End pruebas out of context */
 
   const cols = antdEntityGetColumns<Post>(Post);
-  
+
+  //cols.title.title = 'test de title';
+
   cols.actions = {
-      title: "Actions",
-      dataIndex: "actions",
-      width: 125,
-      render: (text, record, index) => {
-        return <ShowButton hideText recordItemId={record.id} />;
-      }
-  }
+    title: "Actions",
+    dataIndex: "actions",
+    width: 125,
+    render: (text, record, index) => {
+      return <ShowButton hideText recordItemId={record.id} />;
+    },
+  };
 
   const { selectProps: postSelectProps } = useSelect<String>({
-        resource: "posts",
-        optionValue: "title"
-    });
-  
+    resource: "posts",
+    optionValue: "title",
+  });
+
   cols["title"].filterDropdown = (props: any) => (
     <FilterDropdown {...props}>
-        <Select
-            style={{ minWidth: 200 }}
-            mode="multiple"
-            placeholder="Select posts"
-            {...postSelectProps}
-        />
+      <Select
+        style={{ minWidth: 200 }}
+        mode="multiple"
+        placeholder="Select posts"
+        {...postSelectProps}
+      />
     </FilterDropdown>
   );
 
@@ -64,7 +71,11 @@ export const PostList: React.FC = () => {
 
   return (
     <List>
-      <Table {...tableProps} rowKey="id" columns={antdEntityTableColumnsFromObj<Post>(cols)} />
+      <Table
+        {...tableProps}
+        rowKey="id"
+        columns={antdEntityTableColumnsFromObj<Post>(cols)}
+      />
     </List>
   );
 };

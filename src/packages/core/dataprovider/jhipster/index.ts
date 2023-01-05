@@ -38,6 +38,11 @@ axiosInstance.interceptors.response.use(
 );
 
 /**
+ * TODO: *tests*
+ **/
+
+
+/**
  *
  *
  * @see {@link https://github.com/jhipster/jhipster-bom/tree/main/jhipster-framework/src/main/java/tech/jhipster/service/filter| JHipster's filters code}

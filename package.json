@@ -5,6 +5,7 @@
   "dependencies": {
     "@pankod/refine-antd": "^3.18.0",
     "@pankod/refine-core": "^3.18.0",
+    "@pankod/refine-inferencer": "^1.2.2",
     "@pankod/refine-react-router-v6": "^3.18.0",
     "@pankod/refine-simple-rest": "^3.35.2",
     "@testing-library/jest-dom": "^5.12.0",
@@ -22,6 +23,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "antd": "^4.18.8",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "2.7.1",
     "rc-table": "^7.28.1",
     "typescript": "^4.7.4"
@@ -36,7 +38,21 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "plugins": ["unused-imports"],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          "vars": "all",
+          "varsIgnorePattern": "^_",
+          "args": "after-used",
+          "argsIgnorePattern": "^_"
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
