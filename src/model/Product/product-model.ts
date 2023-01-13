@@ -1,13 +1,16 @@
 import title from "../../decorators/title.decorator";
-import { AntdEntity } from "decorators/AntdEntity";
+import JoinColumn from "../../decorators/joinColumn.decorator";
+import render from "../../decorators/render.decorator";
 import { Tag } from "antd";
-import render from "decorators/render.decorator";
 import { Rule } from "antd/lib/form";
 
 // TODO: write function and move to other file
 function rules(...rulesToApply: Rule[]) {
   return Reflect.metadata('test', 'test');
 }
+import { User } from "./user-model";
+import { AntdEntity } from "../../decorators/AntdEntity";
+
 
 @AntdEntity()
 export class Post {
@@ -21,5 +24,9 @@ export class Post {
   status: string = "";
 
   createdAt: Date | undefined;
+
+  @JoinColumn("users", 'id', "firstName")
+  @title("Usuario")
+  user: User = new User();
 }
 

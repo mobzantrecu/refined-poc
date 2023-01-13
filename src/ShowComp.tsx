@@ -1,5 +1,6 @@
 import { TextField } from "@pankod/refine-antd";
-import { ShowFieldsType } from "decorators/AntdEntity";
+import { ShowFieldsType } from "./decorators/AntdEntity";
+import React from "react";
 
 // TODO: refactor names. This component probably should mutate to something more general or based on the class metadata and definitions from decorators
 export const ShowComp: React.FC = (value: any, record: any, index?: number) => {

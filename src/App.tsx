@@ -8,9 +8,12 @@ import {
 import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 //import jhipsterDataProvider from "./packages/core/dataprovider/jhipster";
+import jhipsterDataProvider from "./packages/core/dataprovider/jhipster";
 
 import "@pankod/refine-antd/dist/styles.min.css";
 import { PostList, PostShow } from "./pages/posts";
+import { SampleList } from "./pages/samples/list";
+import React from "react";
 
 const App: React.FC = () => {
   return (
@@ -22,7 +25,10 @@ const App: React.FC = () => {
       ReadyPage={ReadyPage}
       notificationProvider={notificationProvider}
       catchAll={<ErrorComponent />}
-      resources={[{ name: "posts", list: PostList, show: PostShow }]}
+      resources={[
+        { name: "posts", list: PostList, show: PostShow },
+        { name: "samples", list: SampleList },
+      ]}
     />
   );
 };

@@ -16,6 +16,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.0",
     "reflect-metadata": "^0.1.13",
+    "ts-pattern": "^4.1.1",
     "web-vitals": "^1.1.1"
   },
   "devDependencies": {
@@ -39,7 +40,9 @@
       "react-app",
       "react-app/jest"
     ],
-    "plugins": ["unused-imports"],
+    "plugins": [
+      "unused-imports"
+    ],
     "rules": {
       "@typescript-eslint/no-unused-vars": "off",
       "unused-imports/no-unused-imports": "error",

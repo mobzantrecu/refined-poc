@@ -5,9 +5,9 @@ import {
   DateField,
   TextField
 } from "@pankod/refine-antd";
-import { Post } from "model/Product/product-model";
+import { Post } from "../../model/Product/product-model";
 import React from "react";
-import { antdEntityGetShowFields, ShowFieldsType } from "decorators/AntdEntity";
+import { antdEntityGetShowFields, ShowFieldsType } from "../../decorators/AntdEntity";
 import { ShowAllFields } from "ShowComp";
 
 export const PostShow = () => {

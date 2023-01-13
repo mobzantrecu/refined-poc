@@ -75,7 +75,7 @@ const mapOperator = (operator: CrudOperators): string => {
     .with("gte", () => JHipsterCrudOperators.GREATER_THAN_OR_EQUAL)
     .with("lt", () => JHipsterCrudOperators.LESS_THAN)
     .with("lte", () => JHipsterCrudOperators.LESS_THAN_OR_EQUAL)
-    .otherwise((notSupportedOperator) => {
+    .otherwise((notSupportedOperator: any) => {
       throw Error(`Operator ${notSupportedOperator} is not supported`);
     });
 
