@@ -39,7 +39,9 @@
       "react-app",
       "react-app/jest"
     ],
-    "plugins": ["unused-imports"],
+    "plugins": [
+      "unused-imports"
+    ],
     "rules": {
       "@typescript-eslint/no-unused-vars": "off",
       "unused-imports/no-unused-imports": "error",

@@ -1,16 +1,20 @@
 import { TextField } from "@pankod/refine-antd";
-import { ShowFieldsType } from "decorators/AntdEntity";
+import { ShowFieldsType } from "./decorators/AntdEntity";
+
+type ShowComponentProps = {value: any, record: any, index?: number}
 
 // TODO: refactor names. This component probably should mutate to something more general or based on the class metadata and definitions from decorators
-export const ShowComp: React.FC = (value: any, record: any, index?: number) => {
-  const Componente = record?.metadata?.renderTag;
+// TODO: edge case: props null
+export const ShowComp: React.FC<ShowComponentProps> = (props: ShowComponentProps, context?: any) => {
+  const Componente = props.record?.metadata?.renderTag;
 
   return (
-    <div key={record.key}>
-      <div style={{backgroundColor: 'red'}}>
+    <div key={props.record.key}>
+      <div style={{ backgroundColor: "red" }}>
         <TextField
           value={
-            (record?.metadata?.title && record.metadata.title.toString()) ?? null
+            `${props.index} ` + (props.record?.metadata?.title && props.record.metadata.title.toString()) ??
+            null
           }
         />
       </div>
@@ -18,7 +22,7 @@ export const ShowComp: React.FC = (value: any, record: any, index?: number) => {
       {/**
        * Componente references the React component defiend in the class Render decorator
        */}
-      <Componente>{(value && value.toString()) ?? null}</Componente>
+      <Componente>{(props.value && props.value.toString()) ?? null}</Componente>
     </div>
   );
 };

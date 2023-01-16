@@ -11,10 +11,14 @@ import {
   CrudFilter,
   GetManyResponse,
   GetListResponse,
+  CustomResponse,
+  DeleteOneResponse,
+  UpdateResponse,
+  CreateResponse,
+  GetOneResponse,
 } from "@pankod/refine-core";
 //import warnOnce from "warn-once";
 import {
-  IDataContextProvider,
   MetaDataQuery,
   Pagination,
   BaseRecord,
@@ -36,11 +40,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(customError);
   }
 );
-
-/**
- * TODO: *tests*
- **/
-
 
 /**
  *
@@ -82,7 +81,7 @@ const mapOperator = (operator: CrudOperators): string => {
   return `${op}`;
 };
 
-const generateSort = (sort?: CrudSorting) => {
+export const generateSort = (sort?: CrudSorting) => {
   if (sort && sort.length > 0) {
     const _sort: string[] = [];
     const _order: string[] = [];
@@ -101,7 +100,7 @@ const generateSort = (sort?: CrudSorting) => {
   return;
 };
 
-const generateFilter = (filters?: CrudFilters) => {
+export const generateFilter = (filters?: CrudFilters) => {
   const queryFilters: { [key: string]: string } = {};
 
   if (filters) {
@@ -118,7 +117,16 @@ const generateFilter = (filters?: CrudFilters) => {
   return queryFilters;
 };
 
-class JHipsterDataProvider implements IDataContextProvider {
+/**
+ *
+ * @privateRemarks
+ * Methods are implemented as attributes of the class because {@link @pankod/refine-core#useDataProvider | the useDataProvider hook} needs to access them as an JSON Object.
+ * The class it's marked as sealed because it may not be inherited and/or extended from. If you need to call another API or use a custom API call, then create another DataProvider or use the useCustom hook which will call the custom method in this class.
+ *
+ * @sealed
+ **/
+
+class JHipsterDataProvider implements DataProvider {
   private apiUrl: Required<string>;
   private httpClient: Required<AxiosInstance>;
 
@@ -127,15 +135,16 @@ class JHipsterDataProvider implements IDataContextProvider {
     this.httpClient = httpClient;
   }
 
-  getApiUrl() {
+  public getApiUrl = (): string => {
     return this.apiUrl;
-  }
+  };
 
-  async getOne(params: {
-    resource: string;
-    id: BaseKey;
-    metaData?: MetaDataQuery;
-  }) {
+  public getOne = async <TData extends BaseRecord = BaseRecord>(
+    params: {
+      resource: string;
+      id: BaseKey;
+      metaData?: MetaDataQuery;
+  }): Promise<GetOneResponse<TData>> => {
     const { data } = await this.httpClient.get(
       `${this.apiUrl}/${params.resource}/${params.id}`
     );
@@ -143,9 +152,13 @@ class JHipsterDataProvider implements IDataContextProvider {
     return {
       data,
     };
-  }
+  };
 
-  async getList<TData extends BaseRecord = BaseRecord>(
+  /**
+   *
+   * TODO: check default values 
+   **/
+  public getList = async <TData extends BaseRecord = BaseRecord>(
     params: {
       resource: string;
       pagination?: Pagination;
@@ -159,7 +172,7 @@ class JHipsterDataProvider implements IDataContextProvider {
       pagination: { current: 1, pageSize: 10 },
       resource: "",
     }
-  ): Promise<GetListResponse<TData>> {
+  ): Promise<GetListResponse<TData>> => {
     const url = `${this.apiUrl}/${params.resource}`;
 
     const { current = 1, pageSize = 10 } = params.pagination ?? {};
@@ -195,14 +208,14 @@ class JHipsterDataProvider implements IDataContextProvider {
       data,
       total,
     };
-  }
+  };
 
-  async getMany<TData extends BaseRecord = BaseRecord>(params: {
+  public getMany = async <TData extends BaseRecord = BaseRecord>(params: {
     resource: string;
     ids: BaseKey[];
     metaData?: MetaDataQuery;
     dataProviderName?: string;
-  }): Promise<GetManyResponse<TData>> {
+  }): Promise<GetManyResponse<TData>> => {
     const idsInFilter: CrudFilter = {
       field: "id",
       operator: "in",
@@ -217,13 +230,13 @@ class JHipsterDataProvider implements IDataContextProvider {
     return {
       data,
     };
-  }
+  };
 
-  async create<TVariables = {}>(params: {
+  public create = async <TData extends BaseRecord = BaseRecord, TVariables = {}>(params: {
     resource: string;
     variables: TVariables;
     metaData?: MetaDataQuery;
-  }) {
+  }): Promise<CreateResponse<TData>> => {
     const url = `${this.apiUrl}/${params.resource}`;
 
     const { data } = await this.httpClient.post(url, params.variables);
@@ -231,14 +244,14 @@ class JHipsterDataProvider implements IDataContextProvider {
     return {
       data,
     };
-  }
+  };
 
-  async update<TVariables = {}>(params: {
+  public update = async <TData extends BaseRecord = BaseRecord, TVariables = {}>(params: {
     resource: string;
     id: BaseKey;
     variables: TVariables;
     metaData?: MetaDataQuery;
-  }) {
+  }): Promise<UpdateResponse<TData>> => {
     const url = `${this.apiUrl}/${params.resource}/${params.id}`;
 
     const { data } = await this.httpClient.put(url, params.variables);
@@ -246,14 +259,14 @@ class JHipsterDataProvider implements IDataContextProvider {
     return {
       data,
     };
-  }
+  };
 
-  async deleteOne<TVariables = {}>(params: {
+  public deleteOne = async <TVariables = {}, TData extends BaseRecord = BaseRecord>(params: {
     resource: string;
     id: BaseKey;
     variables?: TVariables;
     metaData?: MetaDataQuery;
-  }) {
+  }): Promise<DeleteOneResponse<TData>> => {
     const url = `${this.apiUrl}/${params.resource}/${params.id}`;
 
     const { data } = await this.httpClient.delete(url, {
@@ -263,18 +276,33 @@ class JHipsterDataProvider implements IDataContextProvider {
     return {
       data,
     };
-  }
+  };
+
+  public custom = async <
+    TData extends BaseRecord = BaseRecord,
+    TQuery = unknown,
+    TPayload = unknown
+  >(params: {
+    url: string;
+    method: "get" | "delete" | "head" | "options" | "post" | "put" | "patch";
+    sort?: CrudSorting;
+    filters?: CrudFilter[];
+    payload?: TPayload;
+    query?: TQuery;
+    headers?: {};
+    metaData?: MetaDataQuery;
+  }): Promise<CustomResponse<TData>> => {
+    throw Error("Not implemented");
+  };
 }
 
 const JHipsterServer = (
   apiUrl: string,
   httpClient: AxiosInstance = axiosInstance
-): Omit<
-  Required<DataProvider>,
-  "createMany" | "updateMany" | "deleteMany" | "custom"
-> => {
+): Omit<Required<DataProvider>, "createMany" | "updateMany" | "deleteMany"> => {
   const jhipsterDataProvider = new JHipsterDataProvider(apiUrl, httpClient);
-  return {
+  return jhipsterDataProvider;
+  /*return {
     create: (params) => jhipsterDataProvider.create(params),
     deleteOne: jhipsterDataProvider.deleteOne,
     getApiUrl: jhipsterDataProvider.getApiUrl,
@@ -282,7 +310,7 @@ const JHipsterServer = (
     getMany: jhipsterDataProvider.getMany,
     getOne: jhipsterDataProvider.getOne,
     update: jhipsterDataProvider.update,
-  };
+  };*/
 };
 
 export default JHipsterServer;

@@ -11,9 +11,9 @@ import {
 //import { ColumnType } from "antd/es/table/interface";
 import {
   antdEntityGetColumns,
-//  antdEntityTableColumns,
+  //  antdEntityTableColumns,
   antdEntityTableColumnsFromObj,
-} from "decorators/AntdEntity";
+} from "../../decorators/AntdEntity";
 //import { generatePropertyDecorators } from "decorators/AntdTableColumn";
 //import { ColumnsType } from "rc-table/lib/interface";
 import { Post } from "../../model/Product/product-model";
