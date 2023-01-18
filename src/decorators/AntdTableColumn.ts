@@ -1,5 +1,5 @@
 import { ColumnType } from "antd/es/table/interface";
-import { Post } from "model/Product/product-model";
+import { Post } from "../model/Product/product-model";
 import ts from "typescript";
 import { antdEntityGetColumns } from "./AntdEntity";
 

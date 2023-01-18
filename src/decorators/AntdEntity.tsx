@@ -8,9 +8,19 @@ import { DataIndex, Key } from "rc-table/lib/interface";
 import { Typography } from "antd";
 import { ShowComp } from "../ShowComp";
 import { renderMetadataKey, renderKey } from "./render.decorator";
+import { ComponentType, FunctionComponent } from "react";
+import { joinColumnKey, joinColumnMetadataKey } from "./joinColumn.decorator";
+
+type Classable<T> = new (...args: any) => T;
 
 interface AntdColumn<T> extends ColumnType<T> {
-	renderTag?: React.Component
+  /**
+   * The Component to render when loading the Show view
+   *
+   * @privateRemarks
+   * TODO: check if this should change to a function that returns a ComponentType like refine's rendercell?
+   **/
+  renderTag?: ComponentType;
 }
 
 type AntdTableColumns<T> = Record<string | symbol, AntdColumn<T>>;
@@ -19,18 +29,18 @@ interface AntdEntityOptions {}
 
 /**
  * Marks the class as usable for Antd's components: Table's {@link '@antd/es/table/ColumnsType' | ColumnsType}, etc.
- * @decorators key, dataIndex, title, sorter
+ * @decorators key, dataIndex, title, sorter, render
  **/
 export function AntdEntity(options?: AntdEntityOptions): ClassDecorator;
 
 /**
- * TODO: type columnDefinition with a specific type which includes ColumnType and the properties used in the other views such as Show, which e.g. includes a component property
- * TODO: make it dynamic in base of available decorators and it's according @{link '@antd/es/table/ColumnsType' | column} property
+ * TODO: make it dynamic in base of available decorators and it's according @{link '@antd/es/table/ColumnsType' | column} property [clickup #865bgjt0e]
+ * TODO: extract each decorator get to its own function as with getFieldTitle() [clickup #865bh7p1x]
  **/
 export function AntdEntity(options?: AntdEntityOptions): ClassDecorator {
   /**
    * @param target - The class to which apply the decorator
-   * TODO: specify target's type -- possibly it could be something like FunctionConstructor, but it doesn't work straightforward, because a Class is indeed a Function under the hood
+   * TODO: specify target's type -- possibly it could be something like FunctionConstructor, but it doesn't work straightforward, because a Class is indeed a Function under the hood - check if Classable works [clickup #865bh4t24]
    **/
   return function (target: any) {
     type TargetClassType = InstanceType<typeof target>;
@@ -39,7 +49,25 @@ export function AntdEntity(options?: AntdEntityOptions): ClassDecorator {
     const columns: AntdTableColumns<TargetClassType> = {};
 
     for (const property of properties) {
-      columns[property] = {}; // type columns[property] = ColumnType<TargetClassType>;
+      columns[property] = {};
+    }
+
+    for (const property of properties) {
+      let metadataValue: FunctionComponent | undefined = undefined;
+
+      if (
+        Reflect.hasMetadata(joinColumnMetadataKey, decoratedClass, property)
+      ) {
+        metadataValue = Reflect.getMetadata(
+          joinColumnMetadataKey,
+          decoratedClass,
+          property
+        );
+      } 
+
+      const columnDefinition = columns[property];
+
+      columnDefinition[joinColumnKey] = metadataValue;
     }
 
     for (const property of properties) {
@@ -61,7 +89,7 @@ export function AntdEntity(options?: AntdEntityOptions): ClassDecorator {
         metadataValue = property.toString();
       }
 
-      const columnDefinition = columns[property] as ColumnType<TargetClassType>;
+      const columnDefinition = columns[property];
 
       columnDefinition[dataIndexKey] = metadataValue;
     }
@@ -85,20 +113,20 @@ export function AntdEntity(options?: AntdEntityOptions): ClassDecorator {
         metadataValue = property.toString();
       }
 
-      const columnDefinition = columns[property] as ColumnType<TargetClassType>;
+      const columnDefinition = columns[property];
 
       columnDefinition[keyKey] = metadataValue;
     }
 
     for (const property of properties) {
       let metadataValue = getFieldTitle(decoratedClass, property);
-      const columnDefinition = columns[property] as ColumnType<TargetClassType>;
+      const columnDefinition = columns[property];
 
       columnDefinition[titleKey] = metadataValue;
     }
 
     for (const property of properties) {
-      let metadataValue: React.ComponentType | undefined = undefined;
+      let metadataValue: React.ComponentType = Typography.Paragraph;
 
       if (Reflect.hasMetadata(renderMetadataKey, decoratedClass, property)) {
         metadataValue = Reflect.getMetadata(
@@ -109,26 +137,24 @@ export function AntdEntity(options?: AntdEntityOptions): ClassDecorator {
       } else {
         Reflect.defineMetadata(
           renderMetadataKey,
-          Typography.Paragraph,
+          metadataValue,
           decoratedClass,
           property
         );
-        metadataValue = Typography.Paragraph
       }
 
-      const columnDefinition = columns[property] as {renderTag: any};
+      const columnDefinition = columns[property];
 
       columnDefinition[renderKey] = metadataValue;
     }
 
     Reflect.defineMetadata("AntdTable:columns", columns, target);
 
-    console.log(Reflect.getMetadata("AntdTable:columns", target));
     return target;
   };
 }
 
-// TODO: explain what this 3 functions get as parameters, what returns and why. Whenever it's needed type the params, returns and expected arguments in calls.
+// TODO: explain what this 3 functions get as parameters, what returns and why. Whenever it's needed type the params, returns and expected arguments in calls. [clickup #865bgjt87]
 export function antdEntityTableColumns<T>(clazz: Function): ColumnType<T>[] {
   return Object.values(
     Reflect.getMetadata("AntdTable:columns", clazz as Object)
@@ -149,14 +175,10 @@ export function antdEntityTableColumnsFromObj<T>(
   return Object.values(obj);
 }
 
-/**
- * TODO: idem AntdEntity's internal function with target param but for clazz (specify target's type -- possibly it could be something like FunctionConstructor, but it doesn't work straightforward, because a Class is indeed a Function under the hood)
- * TODO: objectClass param should be something related to clazz's type given that it's an instance of JavaScript's Object that it yet needs to be converted to a clazz-type instance.
- **/
-export function antdEntityGetShowFields<T>(
-  clazz: any,
-  objectClass: T | undefined
-): ShowFieldsType {
+export function antdEntityGetShowFields<T extends Object>(
+  clazz: Classable<T>,
+  objectClass?: T
+): ShowFieldsType<T> {
   const showFields: ShowFieldsType = {};
 
   let metadata = Object.assign(
@@ -164,41 +186,41 @@ export function antdEntityGetShowFields<T>(
     Reflect.getMetadata("AntdTable:columns", clazz)
   );
 
-  // TODO: refactor variables names
+  // TODO: refactor variables names [clickup #865bh33dg]
+  // TODO: extract this logic to an specific function [clickup #865bh7kfg]
   //This converts objectClass to an instance of clazz-type to be able to get it's metadata and properties
   const objectInstance = new clazz();
-  const obj = Object.assign(objectInstance, objectClass);
+  const obj = Object.assign(objectInstance, objectClass) as AntdTableColumns<T>;
 
   /**
-   *  TODO: check if should iterate over objectClass properties or over objectInstance properties? When loading the ShowComp without data, it only shows the fields that has some metadata defined and not all the expected/available fields?
+   *  TODO: check if should iterate over objectClass properties or over objectInstance properties? When loading the ShowComp without data, it only shows the fields that has some metadata defined and not all the expected/available fields? [clickup #865bh7m2c]
    * 		Possible answer: We should iterate over objectInstance properties because it has only the properties defined in the class with which we want to operate, and not all the data that may come from the DataProvider.
    **/
   const properties = Reflect.ownKeys(obj);
 
   // TODO: {nice to have} This might be pre-computed and memoized instead of calling the function everytime the Show Fields need to be rendered.
-  for (const property of properties) {
-  	// TODO: complete default options or force them thorugh decorators initialization
-  	const defaultOpts = {}
+  for (const [index, property] of properties.entries()) {
+    // TODO: complete default options or force them through decorators initialization
+    const defaultOpts = {};
     // TODO: type objFields and refactor
     const objFields = {
       value: obj[property],
       /**
-       * TODO: Take component from metadata and if it's null use Paragraph as default (done). This behaviour must be in some other method that handles metadata for an object, including this component property as getFieldTitle().
-       * 		 If property it's marked as NotDisplay component must be null.
-       * 		 If property it's marked as NotDisplay the render method must be no-op.
-       * 		 If property it's marked as NotDisplay the render method _probably_ should be sealed/freezed (impossible to change). Gather info about this, it may be possible for some cases that you wouldn't like to show a field in certain default cases but one would like to manage edge-cases manually, or show all fields nonetheless based on some flag (like debug).
-       * 		 If property it's marked as NotDisplay, the objFields for the property must be complete nonetheless.
+       * TODO: Take component from metadata and if it's null use Paragraph as default (done). This behaviour must be in some other method that handles metadata for an object, including this component property as getFieldTitle(). [clickup #865bh7nn8]
+       * 		 If property it's marked with @decorator `NotDisplay` component must be null.
+       * 		 If property it's marked with @decorator `NotDisplay` the render method must be no-op.
+       * 		 If property it's marked with @decorator `NotDisplay` the render method _probably_ should be sealed/freezed (impossible to change). Gather info about this, it may be possible for some cases that you wouldn't like to show a field in certain default cases but one would like to manage edge-cases manually, or show all fields nonetheless based on some flag (like debug).
+       * 		 If property it's marked with @decorator `NotDisplay`, the objFields for the property must be complete nonetheless.
        **/
       metadata: Object.assign(
         {},
         { renderTag: Typography.Paragraph },
-        property in metadata ? metadata[property] : defaultOpts,
+        property in metadata ? metadata[property] : defaultOpts
       ),
     };
-    console.log({objFields})
 
-    // TODO: pass index
-    const render = () => ShowComp(obj[property], objFields);
+    const render = () =>
+      ShowComp({ value: obj[property], record: objFields, index });
 
     // TODO: refactor
     const propertyObject: ShowFields<typeof clazz> = Object.assign(

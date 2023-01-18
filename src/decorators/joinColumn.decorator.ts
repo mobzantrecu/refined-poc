@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import "reflect-metadata";
 import JoinColumnFetch from "../model/DecoratorsReactFn/joinColumnFetch";
 import JoinColumnMultipleFetch from "../model/DecoratorsReactFn/joinColumnMultipleFetch";
@@ -10,7 +10,7 @@ function JoinColum(resource: string, identification:string, fieldToShow: string,
   const element = multiple ? JoinColumnMultipleFetch : JoinColumnFetch;
   const returnElement = (item: any) => {
     const id = item[identification];
-    return  React.createElement(element, { resource, id, fieldToShow });
+    return  React.createElement(element, { resource, id, fieldToShow }) as unknown as FunctionComponent<any>;
   };
 
   return Reflect.metadata(joinColumnMetadataKey, returnElement);

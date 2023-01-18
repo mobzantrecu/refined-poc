@@ -1,0 +1,7 @@
+declare module 'axios/lib/adapters/http' {
+  import Adapter from 'axios';
+
+  const HttpAdapter: typeof Adapter;
+
+  export default HttpAdapter;
+}

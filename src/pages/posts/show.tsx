@@ -1,14 +1,12 @@
 import { useShow } from "@pankod/refine-core";
-import {
-  Show,
-  Input,
-  DateField,
-  TextField
-} from "@pankod/refine-antd";
+import { Show, Input, DateField, TextField } from "@pankod/refine-antd";
 import { Post } from "../../model/Product/product-model";
 import React from "react";
-import { antdEntityGetShowFields, ShowFieldsType } from "../../decorators/AntdEntity";
-import { ShowAllFields } from "ShowComp";
+import {
+  antdEntityGetShowFields,
+  ShowFieldsType,
+} from "../../decorators/AntdEntity";
+import { ShowAllFields } from "../../ShowComp";
 
 export const PostShow = () => {
   const { queryResult } = useShow<Post>();
@@ -17,7 +15,7 @@ export const PostShow = () => {
 
   const fields: ShowFieldsType = antdEntityGetShowFields<Post>(Post, record);
   //si record es null, qué pasa acá?
-  fields.createdAt.render = () => ( 
+  fields.createdAt.render = () => (
     <DateField format="LLL" value={fields.createdAt.value} />
   );
 
@@ -28,26 +26,26 @@ export const PostShow = () => {
   );
 
   //edit
-	// const testComponentsEdit = React.useMemo(() => {return (
-	//     <div>
-	//     {testComponentEdit(record, Form.Item)}
-	//     </div>
-	//     )}, [record])
+  // const testComponentsEdit = React.useMemo(() => {return (
+  //     <div>
+  //     {testComponentEdit(record, Form.Item)}
+  //     </div>
+  //     )}, [record])
 
-	// return (
-	//     <div>
-	//         <Edit isLoading={isLoading}>
-	//         <Form>
-	//         {testComponentsEdit}
-	//             </Form>
-	//         </Edit>
-	//     </div>
-	// );
+  // return (
+  //     <div>
+  //         <Edit isLoading={isLoading}>
+  //         <Form>
+  //         {testComponentsEdit}
+  //             </Form>
+  //         </Edit>
+  //     </div>
+  // );
 
-	//const Testcomponnnnnent = testComponent(record)
+  //const Testcomponnnnnent = testComponent(record)
 
-	// Make example using antdEntityGetShowFields return value automatically, another example changing some value or render and a third example managing data manually.
-	return (
+  // Make example using antdEntityGetShowFields return value automatically, another example changing some value or render and a third example managing data manually.
+  return (
     <div>
       <Show isLoading={isLoading}>{testComponents}</Show>
     </div>

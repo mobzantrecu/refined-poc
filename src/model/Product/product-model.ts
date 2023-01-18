@@ -1,15 +1,16 @@
 import title from "../../decorators/title.decorator";
-import JoinColumn from "../../decorators/joinColumn.decorator";
-import render from "../../decorators/render.decorator";
+import { AntdEntity } from "../../decorators/AntdEntity";
 import { Tag } from "antd";
+import render from "../../decorators/render.decorator";
 import { Rule } from "antd/lib/form";
+import JoinColumn from "../../decorators/joinColumn.decorator";
+
 
 // TODO: write function and move to other file
 function rules(...rulesToApply: Rule[]) {
-  return Reflect.metadata('test', 'test');
+  return Reflect.metadata("test", "test");
 }
 import { User } from "./user-model";
-import { AntdEntity } from "../../decorators/AntdEntity";
 
 
 @AntdEntity()
@@ -17,7 +18,7 @@ export class Post {
   id: number | undefined;
 
   @title("Title test")
-  @rules({required: true})
+  @rules({ required: true })
   title: string = "";
 
   @render(Tag)
@@ -29,4 +30,3 @@ export class Post {
   @title("Usuario")
   user: User = new User();
 }
-

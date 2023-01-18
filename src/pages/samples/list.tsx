@@ -11,7 +11,7 @@ export const SampleList: React.FC = () => {
 
   return (
     <List>
-      <Table {...tableProps} rowKey="id" columns={antdEntityTableColumnsFromObj<Sample>(cols)} />
+      <Table {...tableProps} rowKey="id" columns={antdEntityTableColumnsFromObj<Sample>(cols) as any} />
     </List>
   );
 };

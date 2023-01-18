@@ -20,7 +20,7 @@ const App: React.FC = () => {
     <Refine
       routerProvider={routerProvider}
       dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-      //dataProvider={jhipsterDataProvider('http://localhost:8081/api')}
+      //dataProvider={jhipsterDataProvider("http://localhost:8081/api")}
       Layout={Layout}
       ReadyPage={ReadyPage}
       notificationProvider={notificationProvider}
