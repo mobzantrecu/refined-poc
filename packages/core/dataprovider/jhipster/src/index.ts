@@ -302,15 +302,6 @@ const JHipsterServer = (
 ): Omit<Required<DataProvider>, "createMany" | "updateMany" | "deleteMany"> => {
   const jhipsterDataProvider = new JHipsterDataProvider(apiUrl, httpClient);
   return jhipsterDataProvider;
-  /*return {
-    create: (params) => jhipsterDataProvider.create(params),
-    deleteOne: jhipsterDataProvider.deleteOne,
-    getApiUrl: jhipsterDataProvider.getApiUrl,
-    getList: (params) => jhipsterDataProvider.getList(params),
-    getMany: jhipsterDataProvider.getMany,
-    getOne: jhipsterDataProvider.getOne,
-    update: jhipsterDataProvider.update,
-  };*/
 };
 
 export default JHipsterServer;

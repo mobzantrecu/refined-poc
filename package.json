@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@bewise/jpf-jhipster-dataprovider": "link:packages/core/dataprovider/jhipster",
     "@pankod/refine-antd": "^3.18.0",
     "@pankod/refine-core": "^3.18.0",
     "@pankod/refine-inferencer": "^1.2.2",
@@ -69,5 +70,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "workspaces": [
+    "packages/core/dataprovider/jhipster"
+  ]
 }
