@@ -10,7 +10,7 @@ function JoinColum(resource: string, identification:string, fieldToShow: string,
   const element = multiple ? JoinColumnMultipleFetch : JoinColumnFetch;
   const returnElement = (item: any) => {
     const id = item[identification];
-    return  React.createElement(element, { resource, id, fieldToShow }) as unknown as FunctionComponent<any>;
+    return React.createElement(element, { resource, id, fieldToShow }) as unknown as FunctionComponent<any>;
   };
 
   return Reflect.metadata(joinColumnMetadataKey, returnElement);

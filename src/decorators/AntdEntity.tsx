@@ -155,13 +155,13 @@ export function AntdEntity(options?: AntdEntityOptions): ClassDecorator {
 }
 
 // TODO: explain what this 3 functions get as parameters, what returns and why. Whenever it's needed type the params, returns and expected arguments in calls. [clickup #865bgjt87]
-export function antdEntityTableColumns<T>(clazz: Function): ColumnType<T>[] {
+export function antdEntityTableColumns<T>(clazz: Classable<T>): ColumnType<T>[] {
   return Object.values(
-    Reflect.getMetadata("AntdTable:columns", clazz as Object)
+    Reflect.getMetadata("AntdTable:columns", clazz)
   );
 }
 
-export function antdEntityGetColumns<T>(clazz: Function): AntdTableColumns<T> {
+export function antdEntityGetColumns<T>(clazz: Classable<T>): AntdTableColumns<T> {
   /** trick to clone object without referencing it @see {@link https://stackoverflow.com/a/38122523/11865068} **/
   return Object.assign(
     {},

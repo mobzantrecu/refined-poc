@@ -8,7 +8,6 @@ import {
 import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 //import jhipsterDataProvider from "./packages/core/dataprovider/jhipster";
-import jhipsterDataProvider from "./packages/core/dataprovider/jhipster";
 
 import "@pankod/refine-antd/dist/styles.min.css";
 import { PostList, PostShow } from "./pages/posts";

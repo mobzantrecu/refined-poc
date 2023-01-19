@@ -1,20 +1,16 @@
-import { useMany, useOne } from "@pankod/refine-core";
+import { BaseKey, BaseRecord, useMany } from "@pankod/refine-core";
 
-const JoinColumnMultipleFetch = ({
-  resource,
-  id,
-  fieldToShow,
-}: any): JSX.Element => {
-  const { data: response } = useMany({
+function JoinColumnMultipleFetch<T extends BaseRecord> ({ resource, id, fieldToShow }: { resource: string, id: BaseKey[], fieldToShow: string }): JSX.Element {
+  const { data: response, isLoading } = useMany<T>({
     resource: resource,
     ids: id,
   });
 
-  const data = response?.data as any[];
+  const data = response?.data;
 
   const filteredData = data?.map((x) => x[fieldToShow]);
 
-  return data ? <>{filteredData.join(", ")}</> : <>{"loading..."}</>;
-};
+  return isLoading ? <>{"loading..."}</> : <>{filteredData?.join(", ")}</>;
+}
 
 export default JoinColumnMultipleFetch;
