@@ -1,18 +1,18 @@
-import title from "../../decorators/title.decorator";
-import JoinColumn from "../../decorators/joinColumn.decorator";
-import { AntdEntity } from "decorators/AntdEntity";
+import title from '../../decorators/title.decorator';
+import JoinColumn from '../../decorators/joinColumn.decorator';
+import { AntdEntity } from 'decorators/AntdEntity';
 
 @AntdEntity()
 export class Sample {
-  id: number | undefined;
+    id: number | undefined;
 
-  title: string = "";
+    title: string = '';
 
-  status: string = "";
+    status: string = '';
 
-  createdAt: Date | undefined;
+    createdAt: Date | undefined;
 
-  @JoinColumn("tags", "tags", "title", true)
-  @title("Etiquetas")
-  tags: any;
+    @JoinColumn('tags', 'tags', 'title', true)
+    @title('Etiquetas')
+    tags: any;
 }

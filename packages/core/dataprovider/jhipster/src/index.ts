@@ -1,44 +1,44 @@
-import axios, { AxiosInstance } from "axios";
-import { stringify } from "query-string";
-import { match } from "ts-pattern";
+import axios, { AxiosInstance } from 'axios';
+import { stringify } from 'query-string';
+import { match } from 'ts-pattern';
 import {
-  DataProvider,
-  HttpError,
-  CrudOperators,
-  CrudFilters,
-  CrudSorting,
-  BaseKey,
-  CrudFilter,
-  GetManyResponse,
-  GetListResponse,
-  CustomResponse,
-  DeleteOneResponse,
-  UpdateResponse,
-  CreateResponse,
-  GetOneResponse,
-} from "@pankod/refine-core";
+    DataProvider,
+    HttpError,
+    CrudOperators,
+    CrudFilters,
+    CrudSorting,
+    BaseKey,
+    CrudFilter,
+    GetManyResponse,
+    GetListResponse,
+    CustomResponse,
+    DeleteOneResponse,
+    UpdateResponse,
+    CreateResponse,
+    GetOneResponse,
+} from '@pankod/refine-core';
 //import warnOnce from "warn-once";
 import {
-  MetaDataQuery,
-  Pagination,
-  BaseRecord,
-} from "@pankod/refine-core/dist/interfaces";
+    MetaDataQuery,
+    Pagination,
+    BaseRecord,
+} from '@pankod/refine-core/dist/interfaces';
 
 const axiosInstance = axios.create();
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    const customError: HttpError = {
-      ...error,
-      message: error.response?.data?.message,
-      statusCode: error.response?.status,
-    };
+    (response) => {
+        return response;
+    },
+    (error) => {
+        const customError: HttpError = {
+            ...error,
+            message: error.response?.data?.message,
+            statusCode: error.response?.status,
+        };
 
-    return Promise.reject(customError);
-  }
+        return Promise.reject(customError);
+    }
 );
 
 /**
@@ -47,74 +47,74 @@ axiosInstance.interceptors.response.use(
  * @see {@link https://github.com/jhipster/jhipster-bom/tree/main/jhipster-framework/src/main/java/tech/jhipster/service/filter| JHipster's filters code}
  */
 enum JHipsterCrudOperators {
-  "EQUALS" = "equals",
-  "NOT_EQUALS" = "notEquals",
-  "SPECIFIED" = "specified",
-  "IN" = "in",
-  "NOT_IN" = "notIn",
-  "CONTAINS" = "contains",
-  "DOES_NOT_CONTAIN" = "doesNotContain",
-  "GREATER_THAN" = "greaterThan",
-  "LESS_THAN" = "lessThan",
-  "GREATER_THAN_OR_EQUAL" = "greaterThanOrEqual",
-  "LESS_THAN_OR_EQUAL" = "lessThanOrEqual",
+    'EQUALS' = 'equals',
+    'NOT_EQUALS' = 'notEquals',
+    'SPECIFIED' = 'specified',
+    'IN' = 'in',
+    'NOT_IN' = 'notIn',
+    'CONTAINS' = 'contains',
+    'DOES_NOT_CONTAIN' = 'doesNotContain',
+    'GREATER_THAN' = 'greaterThan',
+    'LESS_THAN' = 'lessThan',
+    'GREATER_THAN_OR_EQUAL' = 'greaterThanOrEqual',
+    'LESS_THAN_OR_EQUAL' = 'lessThanOrEqual',
 }
 
 const mapOperator = (operator: CrudOperators): string => {
-  const op = match(operator)
-    .with("eq", () => JHipsterCrudOperators.EQUALS)
-    .with("ne", () => JHipsterCrudOperators.NOT_EQUALS)
-    .with("null", () => JHipsterCrudOperators.SPECIFIED)
-    .with("nnull", () => JHipsterCrudOperators.SPECIFIED)
-    .with("in", () => JHipsterCrudOperators.IN)
-    .with("nin", () => JHipsterCrudOperators.NOT_IN)
-    .with("contains", () => JHipsterCrudOperators.CONTAINS)
-    .with("ncontains", () => JHipsterCrudOperators.DOES_NOT_CONTAIN)
-    .with("gt", () => JHipsterCrudOperators.GREATER_THAN)
-    .with("gte", () => JHipsterCrudOperators.GREATER_THAN_OR_EQUAL)
-    .with("lt", () => JHipsterCrudOperators.LESS_THAN)
-    .with("lte", () => JHipsterCrudOperators.LESS_THAN_OR_EQUAL)
-    .otherwise((notSupportedOperator: any) => {
-      throw Error(`Operator ${notSupportedOperator} is not supported`);
-    });
+    const op = match(operator)
+        .with('eq', () => JHipsterCrudOperators.EQUALS)
+        .with('ne', () => JHipsterCrudOperators.NOT_EQUALS)
+        .with('null', () => JHipsterCrudOperators.SPECIFIED)
+        .with('nnull', () => JHipsterCrudOperators.SPECIFIED)
+        .with('in', () => JHipsterCrudOperators.IN)
+        .with('nin', () => JHipsterCrudOperators.NOT_IN)
+        .with('contains', () => JHipsterCrudOperators.CONTAINS)
+        .with('ncontains', () => JHipsterCrudOperators.DOES_NOT_CONTAIN)
+        .with('gt', () => JHipsterCrudOperators.GREATER_THAN)
+        .with('gte', () => JHipsterCrudOperators.GREATER_THAN_OR_EQUAL)
+        .with('lt', () => JHipsterCrudOperators.LESS_THAN)
+        .with('lte', () => JHipsterCrudOperators.LESS_THAN_OR_EQUAL)
+        .otherwise((notSupportedOperator: any) => {
+            throw Error(`Operator ${notSupportedOperator} is not supported`);
+        });
 
-  return `${op}`;
+    return `${op}`;
 };
 
 export const generateSort = (sort?: CrudSorting) => {
-  if (sort && sort.length > 0) {
-    const _sort: string[] = [];
-    const _order: string[] = [];
+    if (sort && sort.length > 0) {
+        const _sort: string[] = [];
+        const _order: string[] = [];
 
-    sort.map((item) => {
-      _sort.push(item.field);
-      _order.push(item.order);
-    });
+        sort.map((item) => {
+            _sort.push(item.field);
+            _order.push(item.order);
+        });
 
-    return {
-      _sort,
-      _order,
-    };
-  }
+        return {
+            _sort,
+            _order,
+        };
+    }
 
-  return;
+    return;
 };
 
 export const generateFilter = (filters?: CrudFilters) => {
-  const queryFilters: { [key: string]: string } = {};
+    const queryFilters: { [key: string]: string } = {};
 
-  if (filters) {
-    filters.map((filter) => {
-      if ("field" in filter) {
-        const { field, operator, value } = filter;
+    if (filters) {
+        filters.map((filter) => {
+            if ('field' in filter) {
+                const { field, operator, value } = filter;
 
-        const mappedOperator = mapOperator(operator);
-        queryFilters[`${field}.${mappedOperator}`] = value;
-      }
-    });
-  }
+                const mappedOperator = mapOperator(operator);
+                queryFilters[`${field}.${mappedOperator}`] = value;
+            }
+        });
+    }
 
-  return queryFilters;
+    return queryFilters;
 };
 
 /**
@@ -127,181 +127,196 @@ export const generateFilter = (filters?: CrudFilters) => {
  **/
 
 class JHipsterDataProvider implements DataProvider {
-  private apiUrl: Required<string>;
-  private httpClient: Required<AxiosInstance>;
+    private apiUrl: Required<string>;
+    private httpClient: Required<AxiosInstance>;
 
-  constructor(apiUrl: string, httpClient: AxiosInstance = axiosInstance) {
-    this.apiUrl = apiUrl;
-    this.httpClient = httpClient;
-  }
-
-  public getApiUrl = (): string => {
-    return this.apiUrl;
-  };
-
-  public getOne = async <TData extends BaseRecord = BaseRecord>(
-    params: {
-      resource: string;
-      id: BaseKey;
-      metaData?: MetaDataQuery;
-  }): Promise<GetOneResponse<TData>> => {
-    const { data } = await this.httpClient.get(
-      `${this.apiUrl}/${params.resource}/${params.id}`
-    );
-
-    return {
-      data,
-    };
-  };
-
-  /**
-   *
-   * TODO: check default values 
-   **/
-  public getList = async <TData extends BaseRecord = BaseRecord>(
-    params: {
-      resource: string;
-      pagination?: Pagination;
-      hasPagination?: boolean;
-      sort?: CrudSorting;
-      filters?: CrudFilters;
-      metaData?: MetaDataQuery;
-      dataProviderName?: string;
-    } = {
-      hasPagination: true,
-      pagination: { current: 1, pageSize: 10 },
-      resource: "",
+    constructor(apiUrl: string, httpClient: AxiosInstance = axiosInstance) {
+        this.apiUrl = apiUrl;
+        this.httpClient = httpClient;
     }
-  ): Promise<GetListResponse<TData>> => {
-    const url = `${this.apiUrl}/${params.resource}`;
 
-    const { current = 1, pageSize = 10 } = params.pagination ?? {};
+    public getApiUrl = (): string => {
+        return this.apiUrl;
+    };
 
-    const queryFilters = generateFilter(params.filters);
+    public getOne = async <TData extends BaseRecord = BaseRecord>(params: {
+        resource: string;
+        id: BaseKey;
+        metaData?: MetaDataQuery;
+    }): Promise<GetOneResponse<TData>> => {
+        const { data } = await this.httpClient.get(
+            `${this.apiUrl}/${params.resource}/${params.id}`
+        );
 
-    const query: {
-      _start?: number;
-      _end?: number;
-      _sort?: string;
-      _order?: string;
-    } = params.hasPagination
-      ? {
-          _start: (current - 1) * pageSize,
-          _end: current * pageSize,
+        return {
+            data,
+        };
+    };
+
+    /**
+     *
+     * TODO: check default values
+     **/
+    public getList = async <TData extends BaseRecord = BaseRecord>(
+        params: {
+            resource: string;
+            pagination?: Pagination;
+            hasPagination?: boolean;
+            sort?: CrudSorting;
+            filters?: CrudFilters;
+            metaData?: MetaDataQuery;
+            dataProviderName?: string;
+        } = {
+            hasPagination: true,
+            pagination: { current: 1, pageSize: 10 },
+            resource: '',
         }
-      : {};
+    ): Promise<GetListResponse<TData>> => {
+        const url = `${this.apiUrl}/${params.resource}`;
 
-    const generatedSort = generateSort(params.sort);
-    if (generatedSort) {
-      const { _sort, _order } = generatedSort;
-      query._sort = _sort.join(",");
-      query._order = _order.join(",");
-    }
+        const { current = 1, pageSize = 10 } = params.pagination ?? {};
 
-    const { data, headers } = await this.httpClient.get(
-      `${url}?${stringify(query)}&${stringify(queryFilters)}`
-    );
+        const queryFilters = generateFilter(params.filters);
 
-    const total = +(headers["x-total-count"] ?? Number.NaN);
+        const query: {
+            _start?: number;
+            _end?: number;
+            _sort?: string;
+            _order?: string;
+        } = params.hasPagination
+            ? {
+                  _start: (current - 1) * pageSize,
+                  _end: current * pageSize,
+              }
+            : {};
 
-    return {
-      data,
-      total,
+        const generatedSort = generateSort(params.sort);
+        if (generatedSort) {
+            const { _sort, _order } = generatedSort;
+            query._sort = _sort.join(',');
+            query._order = _order.join(',');
+        }
+
+        const { data, headers } = await this.httpClient.get(
+            `${url}?${stringify(query)}&${stringify(queryFilters)}`
+        );
+
+        const total = +(headers['x-total-count'] ?? Number.NaN);
+
+        return {
+            data,
+            total,
+        };
     };
-  };
 
-  public getMany = async <TData extends BaseRecord = BaseRecord>(params: {
-    resource: string;
-    ids: BaseKey[];
-    metaData?: MetaDataQuery;
-    dataProviderName?: string;
-  }): Promise<GetManyResponse<TData>> => {
-    const idsInFilter: CrudFilter = {
-      field: "id",
-      operator: "in",
-      value: params.ids,
+    public getMany = async <TData extends BaseRecord = BaseRecord>(params: {
+        resource: string;
+        ids: BaseKey[];
+        metaData?: MetaDataQuery;
+        dataProviderName?: string;
+    }): Promise<GetManyResponse<TData>> => {
+        const idsInFilter: CrudFilter = {
+            field: 'id',
+            operator: 'in',
+            value: params.ids,
+        };
+        const queryFilters = generateFilter([idsInFilter]);
+
+        const { data } = await this.httpClient.get(
+            `${this.apiUrl}/${params.resource}?${stringify(queryFilters)}`
+        );
+
+        return {
+            data,
+        };
     };
-    const queryFilters = generateFilter([idsInFilter]);
 
-    const { data } = await this.httpClient.get(
-      `${this.apiUrl}/${params.resource}?${stringify(queryFilters)}`
-    );
+    public create = async <
+        TData extends BaseRecord = BaseRecord,
+        TVariables = {}
+    >(params: {
+        resource: string;
+        variables: TVariables;
+        metaData?: MetaDataQuery;
+    }): Promise<CreateResponse<TData>> => {
+        const url = `${this.apiUrl}/${params.resource}`;
 
-    return {
-      data,
+        const { data } = await this.httpClient.post(url, params.variables);
+
+        return {
+            data,
+        };
     };
-  };
 
-  public create = async <TData extends BaseRecord = BaseRecord, TVariables = {}>(params: {
-    resource: string;
-    variables: TVariables;
-    metaData?: MetaDataQuery;
-  }): Promise<CreateResponse<TData>> => {
-    const url = `${this.apiUrl}/${params.resource}`;
+    public update = async <
+        TData extends BaseRecord = BaseRecord,
+        TVariables = {}
+    >(params: {
+        resource: string;
+        id: BaseKey;
+        variables: TVariables;
+        metaData?: MetaDataQuery;
+    }): Promise<UpdateResponse<TData>> => {
+        const url = `${this.apiUrl}/${params.resource}/${params.id}`;
 
-    const { data } = await this.httpClient.post(url, params.variables);
+        const { data } = await this.httpClient.put(url, params.variables);
 
-    return {
-      data,
+        return {
+            data,
+        };
     };
-  };
 
-  public update = async <TData extends BaseRecord = BaseRecord, TVariables = {}>(params: {
-    resource: string;
-    id: BaseKey;
-    variables: TVariables;
-    metaData?: MetaDataQuery;
-  }): Promise<UpdateResponse<TData>> => {
-    const url = `${this.apiUrl}/${params.resource}/${params.id}`;
+    public deleteOne = async <
+        TVariables = {},
+        TData extends BaseRecord = BaseRecord
+    >(params: {
+        resource: string;
+        id: BaseKey;
+        variables?: TVariables;
+        metaData?: MetaDataQuery;
+    }): Promise<DeleteOneResponse<TData>> => {
+        const url = `${this.apiUrl}/${params.resource}/${params.id}`;
 
-    const { data } = await this.httpClient.put(url, params.variables);
+        const { data } = await this.httpClient.delete(url, {
+            data: params.variables,
+        });
 
-    return {
-      data,
+        return {
+            data,
+        };
     };
-  };
 
-  public deleteOne = async <TVariables = {}, TData extends BaseRecord = BaseRecord>(params: {
-    resource: string;
-    id: BaseKey;
-    variables?: TVariables;
-    metaData?: MetaDataQuery;
-  }): Promise<DeleteOneResponse<TData>> => {
-    const url = `${this.apiUrl}/${params.resource}/${params.id}`;
-
-    const { data } = await this.httpClient.delete(url, {
-      data: params.variables,
-    });
-
-    return {
-      data,
+    public custom = async <
+        TData extends BaseRecord = BaseRecord,
+        TQuery = unknown,
+        TPayload = unknown
+    >(params: {
+        url: string;
+        method:
+            | 'get'
+            | 'delete'
+            | 'head'
+            | 'options'
+            | 'post'
+            | 'put'
+            | 'patch';
+        sort?: CrudSorting;
+        filters?: CrudFilter[];
+        payload?: TPayload;
+        query?: TQuery;
+        headers?: {};
+        metaData?: MetaDataQuery;
+    }): Promise<CustomResponse<TData>> => {
+        throw Error('Not implemented');
     };
-  };
-
-  public custom = async <
-    TData extends BaseRecord = BaseRecord,
-    TQuery = unknown,
-    TPayload = unknown
-  >(params: {
-    url: string;
-    method: "get" | "delete" | "head" | "options" | "post" | "put" | "patch";
-    sort?: CrudSorting;
-    filters?: CrudFilter[];
-    payload?: TPayload;
-    query?: TQuery;
-    headers?: {};
-    metaData?: MetaDataQuery;
-  }): Promise<CustomResponse<TData>> => {
-    throw Error("Not implemented");
-  };
 }
 
 const JHipsterServer = (
-  apiUrl: string,
-  httpClient: AxiosInstance = axiosInstance
-): Omit<Required<DataProvider>, "createMany" | "updateMany" | "deleteMany"> => {
-  const jhipsterDataProvider = new JHipsterDataProvider(apiUrl, httpClient);
-  return jhipsterDataProvider;
+    apiUrl: string,
+    httpClient: AxiosInstance = axiosInstance
+): Omit<Required<DataProvider>, 'createMany' | 'updateMany' | 'deleteMany'> => {
+    const jhipsterDataProvider = new JHipsterDataProvider(apiUrl, httpClient);
+    return jhipsterDataProvider;
 };
 
 export default JHipsterServer;

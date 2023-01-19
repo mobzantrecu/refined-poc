@@ -1,84 +1,84 @@
 {
-  "name": "tutorial",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@bewise/jpf-jhipster-dataprovider": "link:packages/core/dataprovider/jhipster",
-    "@pankod/refine-antd": "^3.18.0",
-    "@pankod/refine-core": "^3.18.0",
-    "@pankod/refine-inferencer": "^1.2.2",
-    "@pankod/refine-react-router-v6": "^3.18.0",
-    "@pankod/refine-simple-rest": "^3.35.2",
-    "@testing-library/jest-dom": "^5.12.0",
-    "@testing-library/react": "^11.2.6",
-    "@testing-library/user-event": "^12.8.3",
-    "@types/jest": "^26.0.23",
-    "nock": "^13.3.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.0",
-    "reflect-metadata": "^0.1.13",
-    "ts-pattern": "^4.1.1",
-    "web-vitals": "^1.1.1"
-  },
-  "devDependencies": {
-    "@types/node": "^12.20.10",
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
-    "antd": "^4.18.8",
-    "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.1.0",
-    "prettier": "2.7.1",
-    "rc-table": "^7.28.1",
-    "typescript": "^4.7.4"
-  },
-  "scripts": {
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "prepare": "husky install"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "plugins": [
-      "unused-imports"
-    ],
-    "rules": {
-      "@typescript-eslint/no-unused-vars": "off",
-      "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": [
-        "warn",
-        {
-          "vars": "all",
-          "varsIgnorePattern": "^_",
-          "args": "after-used",
-          "argsIgnorePattern": "^_"
+    "name": "tutorial",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@bewise/jpf-jhipster-dataprovider": "link:packages/core/dataprovider/jhipster",
+        "@pankod/refine-antd": "^3.18.0",
+        "@pankod/refine-core": "^3.18.0",
+        "@pankod/refine-inferencer": "^1.2.2",
+        "@pankod/refine-react-router-v6": "^3.18.0",
+        "@pankod/refine-simple-rest": "^3.35.2",
+        "@testing-library/jest-dom": "^5.12.0",
+        "@testing-library/react": "^11.2.6",
+        "@testing-library/user-event": "^12.8.3",
+        "@types/jest": "^26.0.23",
+        "nock": "^13.3.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-scripts": "^5.0.0",
+        "reflect-metadata": "^0.1.13",
+        "ts-pattern": "^4.1.1",
+        "web-vitals": "^1.1.1"
+    },
+    "devDependencies": {
+        "@types/node": "^12.20.10",
+        "@types/react": "^18.0.15",
+        "@types/react-dom": "^18.0.6",
+        "antd": "^4.18.8",
+        "eslint-plugin-unused-imports": "^2.0.0",
+        "husky": "^8.0.0",
+        "lint-staged": "^13.1.0",
+        "prettier": "2.7.1",
+        "rc-table": "^7.28.1",
+        "typescript": "^4.7.4"
+    },
+    "scripts": {
+        "dev": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "prepare": "husky install"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ],
+        "plugins": [
+            "unused-imports"
+        ],
+        "rules": {
+            "@typescript-eslint/no-unused-vars": "off",
+            "unused-imports/no-unused-imports": "error",
+            "unused-imports/no-unused-vars": [
+                "warn",
+                {
+                    "vars": "all",
+                    "varsIgnorePattern": "^_",
+                    "args": "after-used",
+                    "argsIgnorePattern": "^_"
+                }
+            ]
         }
-      ]
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": "eslint",
+        "*.{js,jsx,ts,tsx,html,css}": "prettier --check"
+    },
+    "workspaces": [
+        "packages/core/dataprovider/jhipster"
     ]
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint .",
-    "*.{js,jsx,ts,tsx,html,css}": "prettier --check ."
-  },
-  "workspaces": [
-    "packages/core/dataprovider/jhipster"
-  ]
 }

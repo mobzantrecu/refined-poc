@@ -1,17 +1,17 @@
-import { defineConfig } from "tsup";
-import { NodeResolvePlugin } from "@esbuild-plugins/node-resolve";
+import { defineConfig } from 'tsup';
+import { NodeResolvePlugin } from '@esbuild-plugins/node-resolve';
 
 export default defineConfig({
-    entry: ["src/index.ts"],
+    entry: ['src/index.ts'],
     splitting: false,
     sourcemap: true,
     clean: false,
-    platform: "browser",
+    platform: 'browser',
     esbuildPlugins: [
         NodeResolvePlugin({
-            extensions: [".js", "ts", "tsx", "jsx"],
+            extensions: ['.js', 'ts', 'tsx', 'jsx'],
             onResolved: (resolved) => {
-                if (resolved.includes("node_modules")) {
+                if (resolved.includes('node_modules')) {
                     return {
                         external: true,
                     };
@@ -20,5 +20,5 @@ export default defineConfig({
             },
         }),
     ],
-    onSuccess: "tsc --project tsconfig.declarations.json",
+    onSuccess: 'tsc --project tsconfig.declarations.json',
 });

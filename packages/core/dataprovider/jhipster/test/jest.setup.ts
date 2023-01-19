@@ -1,7 +1,7 @@
-import nock from "nock";
+import nock from 'nock';
 
 // TODO: test [clickup #865bh7vb0]
 afterAll(() => {
-  nock.cleanAll();
-  nock.restore();
+    nock.cleanAll();
+    nock.restore();
 });
