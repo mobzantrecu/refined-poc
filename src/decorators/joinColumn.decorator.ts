@@ -6,6 +6,8 @@ import JoinColumnMultipleFetch from '../model/DecoratorsReactFn/joinColumnMultip
 export const joinColumnMetadataKey = Symbol('JoinColumn');
 export const joinColumnKey = 'render';
 
+type Item = any | any[]
+
 function JoinColum(
     resource: string,
     identification: string,
@@ -13,8 +15,11 @@ function JoinColum(
     multiple?: boolean
 ) {
     const element = multiple ? JoinColumnMultipleFetch : JoinColumnFetch;
-    const returnElement = (item: any) => {
-        const id = item[identification];
+    const returnElement = (item: Item) => {
+        const hasIdentificationProperty = !!item[identification];
+        const isAnArrayOfIds = !!item.length;
+
+        const id = isAnArrayOfIds && !hasIdentificationProperty ? item : item[identification];
         return React.createElement(element, {
             resource,
             id,
